@@ -1,17 +1,22 @@
+//! CHRPatch Parsing Expression Grammar
+
 // Primitives
 num_silent = _{ ASCII_DIGIT+ }
-num = { num_silent }
-rest = _{ (!"\n" ~ ANY)+ }
+number = { num_silent }  // Alias to eliminate ambiguity
+line = { num_silent } // Alias to eliminate ambiguity
+offset = { num_silent } // Alias to eliminate ambiguity
+rest = { (!"\n" ~ ANY)+ }
 
 // Patch content
-action_rename = { "rename " ~ path }
-action_replace = { "replace " ~ num ~ rest }
-action_push = { "push " ~ num ~ "+" ~ num ~ " " ~ rest }
-action_delete = { "delete " ~ num }
-statement = { action_delete | action_push | action_rename | action_replace }
-
-// Meta
-separator = { "=========>" }
+type = { "create" | "update" | "delete" }
+path = { !("/" | "-") ~ (!("\n" | " >") ~ pathspec)+ }
+pathspec = _{ "/"* ~ (ASCII_ALPHANUMERIC | "_" | "-" | ".")+ }
+patch_header = { "= " ~ type ~ ": " ~ path ~ " >" }
+action_move = { "move " ~ path }
+action_replace = { "replace " ~ line ~ rest }
+action_push = { "push " ~ line ~ "+" ~ offset ~ " " ~ rest }
+action_cut = { "cut " ~ number }
+statement = { action_cut | action_push | action_move | action_replace }
 
 // Header contents
 username = { (!" [" ~ (ASCII_ALPHANUMERIC | "_" | "-"))+ }
@@ -20,11 +25,12 @@ at = { (!"]" ~ (ASCII_ALPHANUMERIC | "." | "_"))+ }
 email = { who ~ "@" ~ at }
 author = { username ~ " [" ~ email ~ "]" }
 date = { num_silent }
-type = { "create" | "update" | "delete" }
-path = { !("/" | "-") ~ (!"\n" ~ pathspec)+ }
-pathspec = _{ "/"* ~ (ASCII_ALPHANUMERIC | "_" | "-" | ".")+ }
 
 // Global
-header = { "type: " ~ type ~ "\n" ~ "path: " ~ path ~ "\n" ~ "author: " ~ author ~ "\n" ~ "date: " ~ date ~ "\n" ~ "description: " ~ rest ~ "\n" }
-patch = { separator ~ ("\n" ~ statement)+ ~ "\n" ~ separator }
-file = _{ SOI ~ header ~ "\n" ~ (patch ~ "\n")+ ~ EOI }
+header = {
+    "author: " ~ author ~ "\n"
+    ~ "date: " ~ date ~ "\n"
+    ~ "description: " ~ rest ~ "\n"
+}
+patch = { patch_header ~ ("\n" ~ statement)+ ~ "\n" ~ patch_header }
+file = { SOI ~ header ~ "\n" ~ (patch ~ "\n")+ ~ "\n"* ~ EOI }

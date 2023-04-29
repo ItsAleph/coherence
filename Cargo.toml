@@ -10,6 +10,7 @@ name = "chr"
 path = "src/main.rs"
 
 [dependencies]
+anyhow = "1.0.70"
 clap = { version = "4.2.4", features = ["derive"] }
 colored = "2.0.0"
 pest = "2.5.7"

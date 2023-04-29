@@ -10,5 +10,5 @@ mod tests {
     use crate::chrpatch::parser::CHRPatchParser;
 
     #[test]
-    fn t() {}   
+    fn test_parse() {}   
 }
