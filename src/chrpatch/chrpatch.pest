@@ -1,11 +1,11 @@
 // Primitives
 num_silent = _{ ASCII_DIGIT+ }
 num = { num_silent }
-rest = { (!"\n" ~ ANY)+ }
+rest = _{ (!"\n" ~ ANY)+ }
 
 // Patch content
 action_rename = { "rename " ~ path }
-action_replace = { "replace " ~ num ~ " with " ~ rest }
+action_replace = { "replace " ~ num ~ rest }
 action_push = { "push " ~ num ~ "+" ~ num ~ " " ~ rest }
 action_delete = { "delete " ~ num }
 statement = { action_delete | action_push | action_rename | action_replace }
@@ -14,13 +14,17 @@ statement = { action_delete | action_push | action_rename | action_replace }
 separator = { "=========>" }
 
 // Header contents
-author = { "" }
+username = { (!" [" ~ (ASCII_ALPHANUMERIC | "_" | "-"))+ }
+who = { (!"@" ~ ASCII_ALPHANUMERIC)+ }
+at = { (!"]" ~ (ASCII_ALPHANUMERIC | "." | "_"))+ }
+email = { who ~ "@" ~ at }
+author = { username ~ " [" ~ email ~ "]" }
 date = { num_silent }
 type = { "create" | "update" | "delete" }
-path = { !("/" | "-") ~ pathspec+ }
+path = { !("/" | "-") ~ (!"\n" ~ pathspec)+ }
 pathspec = _{ "/"* ~ (ASCII_ALPHANUMERIC | "_" | "-" | ".")+ }
 
 // Global
-header = { "type: " ~ type ~ "\n" ~ "author: " ~ author ~ "\n" ~ "date: " ~ date ~ "\n" ~ "description: " ~ rest ~ "\n" }
+header = { "type: " ~ type ~ "\n" ~ "path: " ~ path ~ "\n" ~ "author: " ~ author ~ "\n" ~ "date: " ~ date ~ "\n" ~ "description: " ~ rest ~ "\n" }
 patch = { separator ~ ("\n" ~ statement)+ ~ "\n" ~ separator }
-file = { SOI ~ header ~ (patch ~ "\n")+ ~ EOI }
+file = _{ SOI ~ header ~ "\n" ~ (patch ~ "\n")+ ~ EOI }

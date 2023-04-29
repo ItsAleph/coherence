@@ -1,0 +1,12 @@
+type: update
+path: src/main.rs
+author: ItsAleph [igorekkrupskij@gmail.com]
+date: 666
+description: Stuff
+
+=========>
+rename src/main.py
+delete 1
+replace 2 def main():
+push 2+1     print("Hello, World!")
+=========>
