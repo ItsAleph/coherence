@@ -3,10 +3,11 @@ use pest::iterators::{Pair, Pairs};
 use crate::ast::*;
 use crate::chrpatch::parser::Rule;
 
-fn construct(pair: Pair<Rule>) -> Result<CHRFile, anyhow::Error> {
+pub fn construct(pair: Pair<Rule>) -> Result<CHRFile, anyhow::Error> {
     let mut pairs = pair.into_inner();
 
     let header = construct_header(&mut pairs);
+    let patches = construct_patches(&mut pairs);
 
     Err(anyhow::anyhow!("something's fucked up"))
 }
@@ -29,4 +30,26 @@ fn construct_header(pairs: &mut Pairs<Rule>) -> CHRHeader {
         date,
         description,
     }
+}
+
+fn construct_patches(pairs: &mut Pairs<Rule>) -> Vec<CHRPatch> {
+    let patches: Vec<CHRPatch> = vec![];
+
+    while let Some(patch_pair) = pairs.next() {
+        let mut patch_fields = patch_pair.into_inner();
+        let type_pair = patch_fields.next().unwrap();
+
+        let type_ = match type_pair.as_str() {
+            "create" => CHRPatchType::Create,
+            "update" => CHRPatchType::Update,
+            "delete" => CHRPatchType::Delete,
+            _ => unreachable!(),
+        };
+
+        let path = patch_fields.next().unwrap().as_str().clone().to_string();
+        
+        todo!();
+    }
+
+    patches
 }

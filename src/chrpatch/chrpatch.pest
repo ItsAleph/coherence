@@ -11,7 +11,7 @@ rest = { (!NEWLINE ~ ANY)+ }
 type = @{ "create" | "update" | "delete" }
 path = { !("/" | "-") ~ (!(NEWLINE | " >") ~ pathspec)+ }
 pathspec = _{ "/"* ~ (ASCII_ALPHANUMERIC | "_" | "-" | ".")+ }
-patch_header = { "= " ~ type ~ ": " ~ path ~ " >" }
+patch_header = _{ "= " ~ type ~ ": " ~ path ~ " >" }
 action_move = { "move " ~ path }
 action_replace = { "replace " ~ line ~ rest }
 action_push = { "push " ~ line ~ "+" ~ offset ~ " " ~ rest }
