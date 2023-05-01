@@ -1,25 +1,26 @@
-mod chrpatch;
-mod cli;
+pub mod ast;
+pub mod chrpatch;
+pub mod cli;
+pub mod commands;
+pub mod utils;
 
-use pest::{Parser, iterators::Pair};
+use crate::cli::{Cli, Commands};
+use crate::commands::parse::main as parse;
+use clap::Parser;
+use colored::Colorize;
 
-fn main() {
-    for pair in crate::chrpatch::parser::CHRPatchParser::parse(
-        crate::chrpatch::parser::Rule::file,
-        &std::fs::read_to_string("test.chrpatch").unwrap(),
-    )
-    .unwrap()
-    {
-        println!("{:?}", pair.as_rule());
-        traverse(pair, Some(2));
-    }
-}
+fn main() -> Result<(), anyhow::Error> {
+    let cli = Cli::parse();
 
-fn traverse(pair: Pair<crate::chrpatch::parser::Rule>, indent_option: Option<i32>) {
-    let indent = indent_option.unwrap_or(0);
+    let _ = match &cli.command {
+        Some(Commands::Parse { file }) => parse(file),
+        None => {
+            return Err(anyhow::anyhow!(
+                "Unknown command. Run {} for help.",
+                "chr help".green()
+            ))
+        }
+    };
 
-    for child in pair.into_inner() {
-        println!("{}{:?}", " ".repeat(indent as usize), child.as_rule());
-        traverse(child, Some(indent + 2));
-    }
+    Ok(())
 }

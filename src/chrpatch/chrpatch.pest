@@ -5,11 +5,11 @@ num_silent = _{ ASCII_DIGIT+ }
 number = { num_silent }  // Alias to eliminate ambiguity
 line = { num_silent } // Alias to eliminate ambiguity
 offset = { num_silent } // Alias to eliminate ambiguity
-rest = { (!"\n" ~ ANY)+ }
+rest = { (!NEWLINE ~ ANY)+ }
 
 // Patch content
-type = { "create" | "update" | "delete" }
-path = { !("/" | "-") ~ (!("\n" | " >") ~ pathspec)+ }
+type = @{ "create" | "update" | "delete" }
+path = { !("/" | "-") ~ (!(NEWLINE | " >") ~ pathspec)+ }
 pathspec = _{ "/"* ~ (ASCII_ALPHANUMERIC | "_" | "-" | ".")+ }
 patch_header = { "= " ~ type ~ ": " ~ path ~ " >" }
 action_move = { "move " ~ path }
@@ -28,9 +28,9 @@ date = { num_silent }
 
 // Global
 header = {
-    "author: " ~ author ~ "\n"
-    ~ "date: " ~ date ~ "\n"
-    ~ "description: " ~ rest ~ "\n"
+    "author: " ~ author ~ NEWLINE
+    ~ "date: " ~ date ~ NEWLINE
+    ~ "description: " ~ rest ~ NEWLINE
 }
-patch = { patch_header ~ ("\n" ~ statement)+ ~ "\n" ~ patch_header }
-file = { SOI ~ header ~ "\n" ~ (patch ~ "\n")+ ~ "\n"* ~ EOI }
+patch = { patch_header ~ (NEWLINE ~ statement)+ ~ NEWLINE ~ patch_header }
+file = { SOI ~ header ~ NEWLINE ~ (patch ~ NEWLINE*)+ ~ EOI }
