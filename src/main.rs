@@ -9,16 +9,16 @@ use crate::commands::parse::main as parse;
 use clap::Parser;
 use colored::Colorize;
 
-fn main() -> Result<(), anyhow::Error> {
+fn main() -> anyhow::Result<()> {
     let cli = Cli::parse();
 
     let _ = match &cli.command {
-        Some(Commands::Parse { file }) => parse(file),
+        Some(Commands::Parse { file }) => parse(file)?,
         None => {
-            return Err(anyhow::anyhow!(
+            anyhow::bail!(
                 "Unknown command. Run {} for help.",
                 "chr help".green()
-            ))
+            );
         }
     };
 

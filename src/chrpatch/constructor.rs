@@ -3,7 +3,7 @@ use pest::iterators::{Pair, Pairs};
 use crate::ast::*;
 use crate::chrpatch::parser::Rule;
 
-pub fn construct(pair: Pair<Rule>) -> Result<CHRFile, anyhow::Error> {
+pub fn construct(pair: Pair<Rule>) -> anyhow::Result<CHRFile> {
     let mut pairs = pair.into_inner();
 
     let header = construct_header(&mut pairs);

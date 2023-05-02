@@ -6,16 +6,12 @@ use crate::chrpatch::{
 };
 use std::fs;
 
-pub fn main(file: &String) -> Result<(), anyhow::Error> {
+pub fn main(file: &String) -> anyhow::Result<()> {
     let input = fs::read_to_string(file)?;
-
     let pair = CHRPatchParser::parse(Rule::file, &input)?.next().unwrap();
+    let chr = construct(pair)?;
 
-    println!("{:#?}", pair);
-
-    let chr = construct(pair);
-
-    println!("{:#?}", chr?);
+    println!("{:#?}", chr);
 
     Ok(())
 }
