@@ -16,7 +16,8 @@ action_move = { "move " ~ path }
 action_replace = { "replace " ~ line ~ rest }
 action_push = { "push " ~ line ~ "+" ~ offset ~ " " ~ rest }
 action_cut = { "cut " ~ number }
-statement = { action_cut | action_push | action_move | action_replace }
+statement = _{ action_cut | action_push | action_move | action_replace }
+statements = { (NEWLINE ~ statement)+ }
 
 // Header contents
 username = { (!" [" ~ (ASCII_ALPHANUMERIC | "_" | "-"))+ }
@@ -32,5 +33,5 @@ header = {
     ~ "date: " ~ date ~ NEWLINE
     ~ "description: " ~ rest ~ NEWLINE
 }
-patch = { patch_header ~ (NEWLINE ~ statement)+ ~ NEWLINE ~ patch_header }
+patch = { patch_header ~ statements ~ NEWLINE ~ patch_header }
 file = { SOI ~ header ~ NEWLINE ~ (patch ~ NEWLINE*)+ ~ EOI }
