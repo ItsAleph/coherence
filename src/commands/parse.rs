@@ -7,14 +7,15 @@ use crate::chrpatch::{
 use std::fs;
 
 pub fn main(file: &String) -> Result<(), anyhow::Error> {
-    println!("Parsing {}", file);
-
     let input = fs::read_to_string(file)?;
 
     let pair = CHRPatchParser::parse(Rule::file, &input)?.next().unwrap();
+
+    println!("{:#?}", pair);
+
     let chr = construct(pair);
 
-    println!("Result: {:?}", chr);
+    println!("{:#?}", chr?);
 
     Ok(())
 }
