@@ -2,6 +2,14 @@
 name = "coherence"
 version = "0.1.0"
 edition = "2021"
+license-file = "LICENSE"
+description = "Minimalictic VCS based on custom patch format, aimed at predictability"
+homepage = "https://itsaleph.github.io/coherence/"
+documentation = "https://docs.rs/coherence/"
+repository = "https://github.com/ItsAleph/coherence"
+readme = "README.md"
+keywords = ["vcs"]
+categories = ["development-tools", "command-line-utilities"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
