@@ -1,8 +1,8 @@
-use std::{path::Path, collections::HashMap, fs::{FileType, read_to_string}};
+use std::{collections::HashMap, fs::read_to_string, path::Path};
 
 /// Builds file tree
 /// path_string must point to directory containing .chr
-pub fn build_tree(path_string: String) -> anyhow::Result<HashMap> {
+pub fn build_tree(path_string: String) -> anyhow::Result<HashMap<String, String>> {
     let path = Path::new(&path_string);
 
     let mut files: HashMap<String, String> = HashMap::new();
@@ -10,18 +10,19 @@ pub fn build_tree(path_string: String) -> anyhow::Result<HashMap> {
 
     while let Some(Ok(entry)) = iter.next() {
         let entry_type = entry.file_type()?;
-        let entry_path = entry.path().to_str()?.to_string();
+        let entry_path = match entry.path().to_str() {
+            Some(val) => val.to_string(),
+            None => {
+                anyhow::bail!("Unable to fetch entry path");
+            }
+        };
 
         if entry_type.is_file() {
-            files.insert(entry_path, read_to_string(entry_path));
+            files.insert(entry_path.clone(), read_to_string(entry_path)?);
         } else if entry_type.is_dir() {
+            files.extend(build_tree(entry_path)?);
+        };
+    }
 
-        }
-    };
-
-    Ok(Tree { files })
-}
-
-pub struct Tree {
-    pub files: HashMap<String, String>, // File path (relative to .chr) to file content mapping
+    Ok(files)
 }

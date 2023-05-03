@@ -1,8 +1,11 @@
 use pest::Parser;
 
-use crate::chrpatch::{
-    constructor::construct,
-    parser::{CHRPatchParser, Rule},
+use crate::{
+    chrpatch::{
+        constructor::construct,
+        parser::{CHRPatchParser, Rule},
+    },
+    utils::build_tree,
 };
 use std::fs;
 
@@ -12,6 +15,8 @@ pub fn main(file: &String) -> anyhow::Result<()> {
     let chr = construct(pair)?;
 
     println!("{:#?}", chr);
+
+    println!("{:#?}", build_tree(".".to_string()));
 
     Ok(())
 }
