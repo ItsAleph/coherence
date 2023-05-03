@@ -1,0 +1,19 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug executable 'chr'",
+            "cargo": {
+                "args": [ "build", "--bin=chr", "--package=coherence" ],
+                "filter": {
+                    "name": "chr",
+                    "kind": "bin"
+                }
+            },
+            "args": ["parse", "--file", "${workspaceFolder}/example.chrpatch"],
+            "cwd": "${workspaceFolder}"
+        }
+    ]
+}

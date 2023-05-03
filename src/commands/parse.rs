@@ -5,7 +5,7 @@ use crate::{
         constructor::construct,
         parser::{CHRPatchParser, Rule},
     },
-    utils::build_tree,
+    utils::{build_tree, parse_ignore},
 };
 use std::fs;
 
@@ -14,9 +14,9 @@ pub fn main(file: &String) -> anyhow::Result<()> {
     let pair = CHRPatchParser::parse(Rule::file, &input)?.next().unwrap();
     let chr = construct(pair)?;
 
-    println!("{:#?}", chr);
+    println!(""); // ("{:#?}", chr);
 
-    println!("{:#?}", build_tree(".".to_string()));
+    println!("{:#?}", build_tree(".".to_string(), &parse_ignore(".gitignore".to_string())?));
 
     Ok(())
 }
