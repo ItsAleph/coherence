@@ -16,28 +16,24 @@ pub fn build_tree(
         let entry_path = match entry.path().to_str() {
             Some(val) => val.to_string(),
             None => {
+                log::warn!("Unable to fetch entry path for entry: {:?}", entry);
                 anyhow::bail!("Unable to fetch entry path");
             }
         };
 
+        if ignore.contains(&entry_path) { continue; }
+
         if entry_type.is_file() {
-            println!(
-                "File path: {}; Ignored: {}",
-                entry_path,
-                ignore.contains(&entry_path)
-            );
-            if ignore.contains(&entry_path) {
-                continue;
-            };
             let entry_content = match read_to_string(&entry_path) {
                 Ok(content) => content,
                 Err(e) => {
                     if e.kind() == ErrorKind::InvalidData {
-                        // println!("ERROR: Unable to read contents of '{}': binary files are not supported yet.", entry_path);
+                        log::warn!("Unable to read file contents for file: {}: binary files are not supported yet.", entry_path);
                         continue;
                     };
+                    log::error!("Unable to read file contents for file: {}: {}", entry_path, e.to_string());
                     anyhow::bail!("Unable to read file contents");
-                }
+                },
             };
 
             files.insert(entry_path.clone(), entry_content);
@@ -51,7 +47,7 @@ pub fn build_tree(
 
 pub fn parse_ignore(root: String) -> anyhow::Result<Vec<String>> {
     let mut ignores = vec![];
-    let content = read_to_string(root)?;
+    let content = read_to_string(&root)?;
     let lines = content.lines();
 
     for line in lines {
@@ -64,7 +60,7 @@ pub fn parse_ignore(root: String) -> anyhow::Result<Vec<String>> {
 
         let path: String = "./".to_string() + Path::new(line).to_str().unwrap();
 
-        println!("Added ignore: {}", &path);
+        log::info!("Ignoring path: {} (root: {})", &path, &root);
         ignores.push(path);
     }
 

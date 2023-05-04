@@ -16,7 +16,12 @@ pub fn main(file: &String) -> anyhow::Result<()> {
 
     println!(); // ("{:#?}", chr);
 
-    build_tree(".".to_string(), &parse_ignore(".gitignore".to_string())?);
+    println!(
+        "{:#?}",
+        build_tree(".".to_string(), &parse_ignore(".gitignore".to_string())?)?
+            .keys()
+            .collect::<Vec<&String>>()
+    );
 
     Ok(())
 }

@@ -10,7 +10,13 @@ pub struct Cli {
 #[derive(Subcommand)]
 pub enum Commands {
     Parse {
+        /// .chrpatch file to parse
         #[arg(short, long)]
         file: String,
+    },
+    Init {
+        /// Path to initialize Coherence repository in
+        #[arg(short, long)]
+        path: String,
     },
 }
