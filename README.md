@@ -1,3 +1,19 @@
 # coherence
 
-An attempt to make a simple, straight-forward, distributed VCS based on raw patching and linear history requirement (aka "if git was gud").
+Minimalictic VCS based on custom patch format, aimed at predictability.
+
+## Installation
+
+The package is available on crates.io:
+
+```
+cargo install coherence
+```
+
+Alternatively, install from source:
+
+```
+git clone https://github.com/ItsAleph/coherence.git
+cd coherence/
+cargo install --path .
+```
