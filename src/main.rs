@@ -12,13 +12,10 @@ use colored::Colorize;
 fn main() -> anyhow::Result<()> {
     let cli = Cli::parse();
 
-    let _ = match &cli.command {
+    match &cli.command {
         Some(Commands::Parse { file }) => parse(file)?,
         None => {
-            anyhow::bail!(
-                "Unknown command. Run {} for help.",
-                "chr help".green()
-            );
+            anyhow::bail!("Unknown command. Run {} for help.", "chr help".green());
         }
     };
 

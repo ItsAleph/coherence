@@ -12,11 +12,11 @@ use std::fs;
 pub fn main(file: &String) -> anyhow::Result<()> {
     let input = fs::read_to_string(file)?;
     let pair = CHRPatchParser::parse(Rule::file, &input)?.next().unwrap();
-    let chr = construct(pair)?;
+    let _chr = construct(pair)?;
 
-    println!(""); // ("{:#?}", chr);
+    println!(); // ("{:#?}", chr);
 
-    println!("{:#?}", build_tree(".".to_string(), &parse_ignore(".gitignore".to_string())?));
+    build_tree(".".to_string(), &parse_ignore(".gitignore".to_string())?);
 
     Ok(())
 }
