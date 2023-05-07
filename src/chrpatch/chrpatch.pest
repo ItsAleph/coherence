@@ -2,36 +2,49 @@
 
 // Primitives
 num_silent = _{ ASCII_DIGIT+ }
-number = { num_silent }  // Alias to eliminate ambiguity
-line = { num_silent } // Alias to eliminate ambiguity
-offset = { num_silent } // Alias to eliminate ambiguity
-rest = { (!NEWLINE ~ ANY)+ }
+number = { num_silent }
+rest = { (!NEWLINE ~ ANY)* }
 
-// Patch content
-type = @{ "create" | "update" | "delete" }
+// Generic patch content
 path = { !("/" | "-") ~ (!(NEWLINE | " >") ~ pathspec)+ }
 pathspec = _{ "/"* ~ (ASCII_ALPHANUMERIC | "_" | "-" | ".")+ }
-patch_header = _{ "= " ~ type ~ ": " ~ path ~ " >" }
-action_move = { "move " ~ path }
-action_replace = { "replace " ~ line ~ " " ~ rest }
-action_push = { "push " ~ line ~ "+" ~ offset ~ " " ~ rest }
-action_cut = { "cut " ~ number }
-statement = _{ action_cut | action_push | action_move | action_replace }
-statements = { (NEWLINE ~ statement)+ }
+
+// Create patch content
+// Result: [path, (content(rest)+, path)?]
+create_patch = { create_patch_header ~ ((NEWLINE ~ create_patch_line)+ ~ NEWLINE ~ create_patch_header)? }
+create_patch_line = _{ "+ " ~ rest }
+create_patch_header = _{ "= create: " ~ path ~ " >" }
+
+// Update patch content
+////////////////////////////////////////////////////// TODO ///////////////////////////////////////////////////////////
+update_patch = { update_patch_header ~ (NEWLINE ~ update_patch_line)+ ~ NEWLINE ~ create_patch_header }
+update_patch_header = _{ "= update: " ~ path ~ " >" }
+update_patch_line = _{ update_patch_push | update_patch_replace_chunk }
+update_patch_push = { number ~ "++ " ~ rest }
+update_patch_replace_chunk = { number ~ " + " ~ rest ~ NEWLINE ~ number ~ " - " ~ rest }
+////////////////////////////////////////////////////// TODO ///////////////////////////////////////////////////////////
+
+// Delete patch content
+// Result: [path, (content(rest)+, path)?]
+delete_patch = { delete_patch_header ~ ((NEWLINE ~ delete_patch_line)+ ~ NEWLINE ~ delete_patch_header)? }
+delete_patch_line = _{ "- " ~ rest }
+delete_patch_header = _{ "= delete: " ~ path ~ " >" }
 
 // Header contents
 username = { (!" [" ~ (ASCII_ALPHANUMERIC | "_" | "-"))+ }
-who = { (!"@" ~ ASCII_ALPHANUMERIC)+ }
-at = { (!"]" ~ (ASCII_ALPHANUMERIC | "." | "_"))+ }
+who = _{ (!"@" ~ ASCII_ALPHANUMERIC)+ }
+at = _{ (!"]" ~ (ASCII_ALPHANUMERIC | "." | "_"))+ }
 email = { who ~ "@" ~ at }
-author = { username ~ " [" ~ email ~ "]" }
+author = _{ username ~ " [" ~ email ~ "]" }
 date = { num_silent }
 
 // Global
-header = {
+header = _{
     "author: " ~ author ~ NEWLINE
     ~ "date: " ~ date ~ NEWLINE
-    ~ "description: " ~ rest ~ NEWLINE
+    ~ "message: " ~ rest ~ NEWLINE
 }
-patch = { patch_header ~ statements ~ NEWLINE ~ patch_header }
-file = { SOI ~ header ~ NEWLINE ~ (patch ~ NEWLINE*)+ ~ EOI }
+// Result: [Result<create_patch> | Result<update_patch> | Result<delete_patch>]
+patch = _{ create_patch | update_patch | delete_patch }
+// Result: [username, email, date, message(rest), Result<patch>*]
+file = { SOI ~ header ~ NEWLINE ~ (patch ~ NEWLINE)* ~ EOI }

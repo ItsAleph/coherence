@@ -1,4 +1,4 @@
-use std::{collections::HashMap, fs::read_to_string, io::ErrorKind, path::Path};
+use std::{collections::HashMap, fs::read_to_string, io::ErrorKind, path::{Path, PathBuf}};
 
 /// Builds file tree
 /// path_string must point to directory containing .chr
@@ -46,7 +46,7 @@ pub fn build_tree(
 }
 
 pub fn parse_ignore(root: String) -> anyhow::Result<Vec<String>> {
-    let mut ignores = vec![];
+    let mut ignores = default_ignores();
     let content = read_to_string(&root)?;
     let lines = content.lines();
 
@@ -60,9 +60,24 @@ pub fn parse_ignore(root: String) -> anyhow::Result<Vec<String>> {
 
         let path: String = "./".to_string() + Path::new(line).to_str().unwrap();
 
-        log::info!("Ignoring path: {} (root: {})", &path, &root);
+        log::trace!("Ignoring path: {} (root: {})", &path, &root);
         ignores.push(path);
     }
 
     Ok(ignores)
+}
+
+pub fn default_ignores() -> Vec<String> {
+    vec![
+        String::from(".chr"),
+        String::from(".git"),
+    ]
+}
+
+pub fn path_to_string(path: &Path) -> anyhow::Result<String> {
+    Ok(path.canonicalize()?.to_str().unwrap().to_owned())
+}
+
+pub fn pathbuf_to_string(path: &PathBuf) -> anyhow::Result<String> {
+    Ok(path.canonicalize()?.to_str().unwrap().to_owned())
 }

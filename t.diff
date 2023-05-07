@@ -1,0 +1,7 @@
+2a3
+> 
+6c7,8
+< print(utc_now())
+---
+> 
+> print(f"Current time: {utc_now()}")

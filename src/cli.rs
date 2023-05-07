@@ -1,3 +1,5 @@
+use std::path::PathBuf;
+
 use clap::{Parser, Subcommand};
 
 #[derive(Parser)]
@@ -9,14 +11,22 @@ pub struct Cli {
 
 #[derive(Subcommand)]
 pub enum Commands {
+    /// Parse .chrpatch file and pretty-print resulting CHRFile
     Parse {
         /// .chrpatch file to parse
-        #[arg(short, long)]
+        #[arg(long)]
         file: String,
     },
+    /// Initialize Coherence repository
     Init {
         /// Path to initialize Coherence repository in
-        #[arg(short, long)]
-        path: String,
+        #[arg(long)]
+        path: Option<PathBuf>,
+    },
+    /// Commit changes
+    Commit {
+        /// Commit message
+        #[arg(short = 'm')]
+        msg: String,
     },
 }

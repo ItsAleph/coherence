@@ -4,9 +4,10 @@ pub mod cli;
 pub mod commands;
 pub mod utils;
 pub mod built;
+pub mod macros;
 
 use crate::cli::{Cli, Commands};
-use crate::commands::parse::main as parse;
+use crate::commands::{init::main as init, parse::main as parse};
 use clap::Parser;
 use colored::Colorize;
 
@@ -17,7 +18,8 @@ fn main() -> anyhow::Result<()> {
 
     match &cli.command {
         Some(Commands::Parse { file }) => parse(file)?,
-        None => {
+        Some(Commands::Init { path }) => init(path)?,
+        _ => {
             anyhow::bail!("Unknown command. Run {} for help.", "chr help".green());
         }
     };

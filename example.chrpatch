@@ -1,20 +1,28 @@
 author: ItsAleph [igorekkrupskij@gmail.com]
-date: 666
-description: Switch to Python
+date: 
+message: misc: do some example stuff
 
-= update: src/main.rs >
-move src/main.py
-cut 1
-replace 2 def main():
-push 2+1     print("Hello, World!")
-= update: src/main.rs >
+= create: src/abc.py >
 
-= update: src/errors.rs >
-move src/errors.py
-replace 2 class MyException(Exception):
-replace 3     """
-replace 4     My own exception
-replace 5     """
-push 5+1 \n
-= update: src/errors.rs >
+= create: src/stuff.py >
++ def func():
++     print("OwO")
++ 
+= create: src/stuff.py >
 
+= update: src/main.py >
+2++ 
+5++ 
+6 + print(f"Current time: {utc_now()}")
+6 - print(utc_now())
+= update: src/main.py
+
+= delete: src/corta-po.py >
+
+= delete: src/uwu.py >
+- def woo(uwu: bool) -> None:
+-     if uwu:
+-         print("UwU")
+-     else:
+-         print(";(")
+= delete: src/uwu.py >
