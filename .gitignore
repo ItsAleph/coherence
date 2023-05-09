@@ -12,5 +12,7 @@ Cargo.lock
 # Git VCS
 .git
 
-# Coherence VCS
-.chr
+# mdbook
+book
+
+
