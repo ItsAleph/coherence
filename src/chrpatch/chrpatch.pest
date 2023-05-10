@@ -16,13 +16,14 @@ create_patch_line = _{ "+ " ~ rest }
 create_patch_header = _{ "= create: " ~ path ~ " >" }
 
 // Update patch content
-////////////////////////////////////////////////////// TODO ///////////////////////////////////////////////////////////
+// Result: [path, (Result<update_patch_push> | Result<update_patch_replace_chunk>)+, path]
 update_patch = { update_patch_header ~ (NEWLINE ~ update_patch_line)+ ~ NEWLINE ~ create_patch_header }
 update_patch_header = _{ "= update: " ~ path ~ " >" }
 update_patch_line = _{ update_patch_push | update_patch_replace_chunk }
+// Result: [line(number), content(rest)]
 update_patch_push = { number ~ "++ " ~ rest }
+// Result: [line(number), new(rest), line(number), old(content)]
 update_patch_replace_chunk = { number ~ " + " ~ rest ~ NEWLINE ~ number ~ " - " ~ rest }
-////////////////////////////////////////////////////// TODO ///////////////////////////////////////////////////////////
 
 // Delete patch content
 // Result: [path, (content(rest)+, path)?]
