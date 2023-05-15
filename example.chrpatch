@@ -11,8 +11,8 @@ message: misc: do some example stuff
 = create: src/stuff.py >
 
 = update: src/main.py >
-2++ 
-5++ 
+2+1 
+5+1 
 6 + print(f"Current time: {utc_now()}")
 6 - print(utc_now())
 = update: src/main.py

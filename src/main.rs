@@ -1,5 +1,5 @@
 pub mod ast;
-pub mod chrpatch;
+pub mod patch;
 pub mod cli;
 pub mod commands;
 pub mod utils;

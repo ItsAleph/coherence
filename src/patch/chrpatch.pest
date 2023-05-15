@@ -19,11 +19,14 @@ create_patch_header = _{ "= create: " ~ path ~ " >" }
 // Result: [path, (Result<update_patch_push> | Result<update_patch_replace_chunk>)+, path]
 update_patch = { update_patch_header ~ (NEWLINE ~ update_patch_line)+ ~ NEWLINE ~ create_patch_header }
 update_patch_header = _{ "= update: " ~ path ~ " >" }
-update_patch_line = _{ update_patch_push | update_patch_replace_chunk }
+update_patch_line = _{ update_patch_push | update_patch_edit | update_patch_cut }
 // Result: [line(number), content(rest)]
-update_patch_push = { number ~ "++ " ~ rest }
+update_patch_push = { number ~ "+" ~ number ~ rest }
 // Result: [line(number), new(rest), line(number), old(content)]
-update_patch_replace_chunk = { number ~ " + " ~ rest ~ NEWLINE ~ number ~ " - " ~ rest }
+update_patch_edit = { number ~ " + " ~ rest ~ NEWLINE ~ number ~ " - " ~ rest }
+// Result: [line(number), content(rest)]
+update_patch_cut = { number ~ "-- " ~ rest }
+
 
 // Delete patch content
 // Result: [path, (content(rest)+, path)?]

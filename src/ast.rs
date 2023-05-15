@@ -1,51 +1,74 @@
+use std::path::PathBuf;
+
+use time::OffsetDateTime;
+
+/// Represents a .chr commit file
 #[derive(Debug)]
 pub struct CHRFile {
-    pub header: CHRHeader,
+    /// Commit's author's username
+    pub username: String,
+    /// Commit's author's email
+    pub email: String,
+    /// Commit's creation date
+    pub date: OffsetDateTime,
+    /// Commit message
+    pub message: String,
+    /// Vec of patches commit contains
     pub patches: Vec<CHRPatch>,
 }
 
+/// Represents a patch
 #[derive(Debug)]
-pub struct CHRHeader {
-    pub author: CHRAuthor,
-    pub date: u64,
-    pub description: String,
-}
-
-#[derive(Debug)]
-pub struct CHRAuthor {
-    pub username: String,
-    pub email: String,
-}
-
-#[derive(Debug)]
-pub struct CHRPatch {
-    pub type_: CHRPatchType,
-    pub path: String,
-    pub actions: Vec<CHRAction>,
-}
-
-#[derive(Debug)]
-pub enum CHRPatchType {
-    Create,
-    Update,
-    Delete,
-}
-
-#[derive(Debug)]
-pub enum CHRAction {
-    Move {
-        path: String,
+pub enum CHRPatch {
+    /// "create" patch
+    Create {
+        /// Path to the file this patch affects
+        path: PathBuf,
+        /// Vec of additions made in this patch
+        additions: Vec<String>,
     },
-    Cut {
-        number: u64,
+    /// "update" patch
+    Update {
+        /// Path to the file this patch affects
+        path: PathBuf,
+        /// Vec of changes made in this patch
+        changes: Vec<CHRPatchChange>,
     },
-    Replace {
+    /// "delete" patch
+    Delete {
+        /// Path to the file this patch affects
+        path: PathBuf,
+        /// Vec of deletions in this patch
+        deletions: Vec<String>,
+    },
+}
+
+/// Represents a change made in an "update" patch
+#[derive(Debug)]
+pub enum CHRPatchChange {
+    /// An "edit" change
+    Edit {
+        /// The line this change applies to
         line: u64,
+        /// New line content
+        new: String,
+        /// Old line content
+        old: String,
+    },
+    /// A "push" change
+    Push {
+        /// The line this change applies to
+        line: u64,
+        /// Offset of this change relative to the line
+        offset: u64,
+        /// The content of the line
         content: String,
     },
-    Push {
+    /// A "cut" change
+    Cut {
+        /// The line this change applies to
         line: u64,
-        offset: u64,
+        /// The content of the line
         content: String,
     },
 }
