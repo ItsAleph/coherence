@@ -1,14 +1,10 @@
 # coherence
 
-Minimalictic VCS based on custom patch format, aimed at predictability.
+Dead simple version control system taking best of Git and Pijul
 
 ## Installation
 
-The package is available on crates.io:
-
-```
-cargo install coherence
-```
+> `coherence` crate on crates.io is currently hopelessly outdated. Please install from source instead.
 
 Alternatively, install from source:
 
