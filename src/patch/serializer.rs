@@ -1,4 +1,5 @@
 use crate::ast::*;
+use crate::log_err;
 
 pub fn serialize_file(file: &CHRFile) -> anyhow::Result<String> {
     let mut out = String::new();
@@ -35,7 +36,7 @@ pub fn serialize_create_patch(patch: &CHRPatch) -> anyhow::Result<String> {
 
     match patch {
         CHRPatch::Create { path, additions } => {
-            out.push_str(&format!("= create: {} >", path.to_str()));
+            out.push_str(&format!("= create: {} >", path.to_str().unwrap()));
 
             for addition in additions {
                 out.push('\n');
@@ -43,7 +44,7 @@ pub fn serialize_create_patch(patch: &CHRPatch) -> anyhow::Result<String> {
             }
 
             if additions.len() > 0 {
-                out.push_str(&format!("= create: {} >", path.to_str()));
+                out.push_str(&format!("= create: {} >", path.to_str().unwrap()));
             };
         }
         _ => return log_err!("Expected enum variant CHRPatch::Create, found {:?}", patch),
