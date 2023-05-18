@@ -21,11 +21,11 @@ pub fn serialize_file(file: &CHRFile) -> anyhow::Result<String> {
 pub fn serialize_patches(file: &CHRFile) -> anyhow::Result<Vec<String>> {
     let mut out = vec![];
 
-    for patch in file.patches {
+    for patch in &file.patches {
         out.push(match patch {
-            CHRPatch::Create { path, additions } => serialize_create_patch(&patch)?,
-            CHRPatch::Update { path, changes } => serialize_update_patch(&patch)?,
-            CHRPatch::Delete { path, deletions } => serialize_delete_patch(&patch)?,
+            CHRPatch::Create { path: _, additions: _ } => serialize_create_patch(&patch)?,
+            CHRPatch::Update { path: _, changes: _ } => serialize_update_patch(&patch)?,
+            CHRPatch::Delete { path: _, deletions: _ } => serialize_delete_patch(&patch)?,
         });
     }
 
@@ -115,4 +115,20 @@ pub fn serialize_update_patch(patch: &CHRPatch) -> anyhow::Result<String> {
     };
 
     Ok(out)
+}
+
+pub fn serialize_change(change: &CHRChange) -> anyhow::Result<String> {
+    let mut out = String::new();
+
+    out.push_str(&match change {
+        CHRChange::Edit { line: _, new: _, old: _ } => todo!(),
+        CHRChange::Push { line: _, offset: _, content: _ } => todo!(),
+        CHRChange::Cut { line: _, content: _ } => todo!(),
+    });
+
+    Ok(out)
+}
+
+pub fn serialize_push_change(change: &CHRChange) -> anyhow::Result<String> {
+    
 }

@@ -32,7 +32,7 @@ pub enum CHRPatch {
         /// Path to the file this patch affects
         path: PathBuf,
         /// Vec of changes made in this patch
-        changes: Vec<CHRPatchChange>,
+        changes: Vec<CHRChange>,
     },
     /// "delete" patch
     Delete {
@@ -45,7 +45,7 @@ pub enum CHRPatch {
 
 /// Represents a change made in an "update" patch
 #[derive(Debug)]
-pub enum CHRPatchChange {
+pub enum CHRChange {
     /// An "edit" change
     Edit {
         /// The line this change applies to

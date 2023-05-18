@@ -81,21 +81,21 @@ pub fn construct_update_patch(pair: &Pair<Rule>) -> anyhow::Result<CHRPatch> {
     Ok(CHRPatch::Update { path, changes })
 }
 
-pub fn construct_push_change(pair: &Pair<Rule>) -> anyhow::Result<CHRPatchChange> {
+pub fn construct_push_change(pair: &Pair<Rule>) -> anyhow::Result<CHRChange> {
     let mut rules = pair.clone().into_inner();
 
     let line = rules.next().unwrap().as_str().parse::<u64>()?;
     let offset = rules.next().unwrap().as_str().parse::<u64>()?;
     let content = rules.next().unwrap().as_str().to_owned();
 
-    Ok(CHRPatchChange::Push {
+    Ok(CHRChange::Push {
         line,
         offset,
         content,
     })
 }
 
-pub fn construct_edit_change(pair: &Pair<Rule>) -> anyhow::Result<CHRPatchChange> {
+pub fn construct_edit_change(pair: &Pair<Rule>) -> anyhow::Result<CHRChange> {
     let mut rules = pair.clone().into_inner();
 
     let line = rules.next().unwrap().as_str().parse::<u64>()?;
@@ -103,16 +103,16 @@ pub fn construct_edit_change(pair: &Pair<Rule>) -> anyhow::Result<CHRPatchChange
     let _ = rules.next().unwrap();
     let old = rules.next().unwrap().as_str().to_owned();
 
-    Ok(CHRPatchChange::Edit { line, new, old })
+    Ok(CHRChange::Edit { line, new, old })
 }
 
-pub fn construct_cut_change(pair: &Pair<Rule>) -> anyhow::Result<CHRPatchChange> {
+pub fn construct_cut_change(pair: &Pair<Rule>) -> anyhow::Result<CHRChange> {
     let mut rules = pair.clone().into_inner();
 
     let line = rules.next().unwrap().as_str().parse::<u64>()?;
     let content = rules.next().unwrap().as_str().to_owned();
 
-    Ok(CHRPatchChange::Cut { line, content })
+    Ok(CHRChange::Cut { line, content })
 }
 
 pub fn construct_delete_patch(pair: &Pair<Rule>) -> anyhow::Result<CHRPatch> {
