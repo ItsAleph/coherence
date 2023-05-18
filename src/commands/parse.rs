@@ -18,7 +18,7 @@ pub fn main(file: &String) -> anyhow::Result<()> {
 
     println!(
         "{:#?}",
-        build_tree(".".to_string(), &parse_ignore(".gitignore".to_string())?)?
+        build_tree(".".to_string(), &parse_ignore(".ignore".to_string())?)?
             .keys()
             .collect::<Vec<&String>>()
     );
