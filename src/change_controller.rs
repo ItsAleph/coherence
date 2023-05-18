@@ -4,6 +4,18 @@ pub struct Database {
     connection: Connection,
 }
 
+pub struct Files {
+    filepath: String,
+    branch: String,
+    commit_path: String,
+    changed_lines: Vec<i64>
+}
+
+pub struct Branches {
+    branch: String,
+    commit_hash: String,
+    commit_summary: String,
+}
 
 trait DatabaseController {
     pub fn init(path_to_file: &str) -> Self {
