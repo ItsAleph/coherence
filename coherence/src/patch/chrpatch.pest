@@ -40,7 +40,16 @@ who = _{ (!"@" ~ ASCII_ALPHANUMERIC)+ }
 at = _{ (!"]" ~ (ASCII_ALPHANUMERIC | "." | "_"))+ }
 email = { who ~ "@" ~ at }
 author = _{ username ~ " [" ~ email ~ "]" }
-date = { num_silent }
+date = {
+    (num_silent ~ "-" ~ num_silent ~ "-" ~ num_silent) // Date
+    ~ "T"
+    ~ (num_silent ~ ":" ~ num_silent ~ ":" ~ num_silent) // Time
+    ~ "."
+    ~ (num_silent) // Millis
+    ~ "+"
+    ~ (num_silent ~ ":" ~ num_silent) // Timezone
+}
+// 2023-05-09T10:12:51.505467+00:00
 
 // Global
 header = _{

@@ -23,9 +23,18 @@ pub fn serialize_patches(file: &CHRFile) -> anyhow::Result<Vec<String>> {
 
     for patch in &file.patches {
         out.push(match patch {
-            CHRPatch::Create { path: _, additions: _ } => serialize_create_patch(&patch)?,
-            CHRPatch::Update { path: _, changes: _ } => serialize_update_patch(&patch)?,
-            CHRPatch::Delete { path: _, deletions: _ } => serialize_delete_patch(&patch)?,
+            CHRPatch::Create {
+                path: _,
+                additions: _,
+            } => serialize_create_patch(&patch)?,
+            CHRPatch::Update {
+                path: _,
+                changes: _,
+            } => serialize_update_patch(&patch)?,
+            CHRPatch::Delete {
+                path: _,
+                deletions: _,
+            } => serialize_delete_patch(&patch)?,
         });
     }
 
@@ -121,14 +130,39 @@ pub fn serialize_change(change: &CHRChange) -> anyhow::Result<String> {
     let mut out = String::new();
 
     out.push_str(&match change {
-        CHRChange::Edit { line: _, new: _, old: _ } => todo!(),
-        CHRChange::Push { line: _, offset: _, content: _ } => todo!(),
-        CHRChange::Cut { line: _, content: _ } => todo!(),
+        CHRChange::Edit {
+            line: _,
+            new: _,
+            old: _,
+        } => serialize_edit_change(change)?,
+        CHRChange::Push {
+            line: _,
+            offset: _,
+            content: _,
+        } => serialize_push_change(change)?,
+        CHRChange::Cut {
+            line: _,
+            content: _,
+        } => serialize_cut_change(change)?,
     });
 
     Ok(out)
 }
 
+pub fn serialize_edit_change(change: &CHRChange) -> anyhow::Result<String> {
+    let mut out = String::new();
+
+    Ok(out)
+}
+
 pub fn serialize_push_change(change: &CHRChange) -> anyhow::Result<String> {
-    
+    let mut out = String::new();
+
+    Ok(out)
+}
+
+pub fn serialize_cut_change(change: &CHRChange) -> anyhow::Result<String> {
+    let mut out = String::new();
+
+    Ok(out)
 }
