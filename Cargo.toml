@@ -1,11 +1,12 @@
 [workspace]
 members = [
   "coherence",
-  # "coherence-backend-traits",
-  # "coherence-backend-native",
-  # "coherence-backend-git",
-  # "coherence-backend-bzr",
-  # "coherence-backend-hg",
-  # "coherence-backend-jj",
-  # "coherence-backend-crs",
+  "coherence-patch",
+  "coherence-backend-traits",
+  "coherence-backend-native",
+  "coherence-backend-git",
+  "coherence-backend-bzr",
+  "coherence-backend-hg",
+  "coherence-backend-jj",
+  "coherence-backend-sl",
 ]
